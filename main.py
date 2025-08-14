@@ -6,10 +6,17 @@ from pygame.locals import *
 # Inicialización de Pygame
 pygame.init()
 
-# Configuración de la pantalla
+'''
+###
+#CONFIGURACION MAPA
+###
+''' 
+
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Generador de Mapa Procedural")
+tituloPantalla = "Generador de Mapa Procedural"
+pygame.display.set_caption(tituloPantalla) # Titulo pantalla
+
 
 # Configuración del mapa
 TILE_SIZE = 4  # Tamaño de cada celda en píxeles
@@ -24,7 +31,7 @@ random.seed(SEED)
 WATER_COLORS = [(65, 105, 225), (70, 130, 180), (0, 105, 148)]  # Azules para agua
 SAND_COLOR = (194, 178, 128)  # Arena/playa
 GRASS_COLORS = [(34, 139, 34), (0, 100, 0), (85, 107, 47)]  # Verdes para tierra
-MOUNTAIN_COLORS = [(139, 137, 137), (105, 105, 105), (128, 128, 128)]  # Grises para montañas
+
 STRUCTURE_COLORS = {
     'house': (139, 69, 19),  # Marrón (casas)
     'tower': (47, 79, 79),   # Gris oscuro (torres)
@@ -41,6 +48,13 @@ REPEAT = 1024
 # Matriz para almacenar el mapa
 world_map = [[None for _ in range(MAP_WIDTH)] for _ in range(MAP_HEIGHT)]
 structures = []  # Lista para almacenar estructuras
+
+
+'''
+###
+#GENERACION DE TERRENO
+###
+''' 
 
 def generate_terrain():
     """Genera el terreno usando ruido Perlin"""
@@ -81,9 +95,6 @@ def generate_terrain():
                     world_map[y][x] = {'type': 'grass', 'variation': 1}  # Hierba húmeda
                 else:
                     world_map[y][x] = {'type': 'grass', 'variation': 0}  # Hierba seca
-            else:
-                # Montañas
-                world_map[y][x] = {'type': 'mountain', 'height': elevation}
             
             # Generar estructuras aleatorias en tierra adecuada
             if world_map[y][x]['type'] in ['grass', 'sand'] and random.random() < 0.005:
@@ -109,10 +120,6 @@ def draw_map():
                 color = SAND_COLOR
             elif tile['type'] == 'grass':
                 color = GRASS_COLORS[tile['variation']]
-            elif tile['type'] == 'mountain':
-                height_norm = (tile['height'] - 0.5) / 0.5  # Normalizar entre 0 y 1
-                color_idx = min(2, int(height_norm * 3))
-                color = MOUNTAIN_COLORS[color_idx]
             
             pygame.draw.rect(screen, color, rect)
     
