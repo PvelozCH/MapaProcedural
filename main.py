@@ -17,7 +17,6 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 tituloPantalla = "Generador de Mapa Procedural"
 pygame.display.set_caption(tituloPantalla) # Titulo pantalla
 
-
 # Configuración del mapa
 TILE_SIZE = 4  # Tamaño de cada celda en píxeles
 MAP_WIDTH = WIDTH // TILE_SIZE  # Ancho del mapa en celdas
@@ -32,11 +31,7 @@ WATER_COLORS = [(65, 105, 225), (70, 130, 180), (0, 105, 148)]  # Azules para ag
 SAND_COLOR = (194, 178, 128)  # Arena/playa
 GRASS_COLORS = [(34, 139, 34), (0, 100, 0), (85, 107, 47)]  # Verdes para tierra
 
-STRUCTURE_COLORS = {
-    'house': (139, 69, 19),  # Marrón (casas)
-    'tower': (47, 79, 79),   # Gris oscuro (torres)
-    'ruin': (112, 128, 144)  # Gris claro (ruinas)
-}
+
 
 # Configuración del ruido Perlin
 OCTAVES = 12          # Número de capas de ruido para mayor detalle
@@ -47,8 +42,44 @@ REPEAT = 1024
 
 # Matriz para almacenar el mapa
 world_map = [[None for _ in range(MAP_WIDTH)] for _ in range(MAP_HEIGHT)]
-structures = []  # Lista para almacenar estructuras
 
+'''
+###
+#IMPORTACION DE OBJETOS DENTRO DEL MAPA
+### 
+''' # Criaturas, personajes, edificios, etc.
+
+# Listas de objetos dentro del mapa
+structures = []  
+criaturas = []
+personajes = []
+
+def generarPersonajes():
+    a = 0
+
+def generarCriaturas():
+    a = 0 
+
+#Genera estructuras, lugares, etc.
+def generarEstructuras(x,y): 
+    
+    STRUCTURE_COLORS = {
+    'house': (139, 69, 19),  # Marrón (casas)
+    'tower': (47, 79, 79),   # Gris oscuro (torres)
+    'ruin': (112, 128, 144)  # Gris claro (ruinas)
+    }
+    
+    '''
+    GENERA NUMERO ALEATORIO DE ESTRUCTURAS SOLAMENTE EN TIERRA ADECUADA
+    '''
+    if world_map[y][x]['type'] in ['grass', 'sand'] and random.random() < 0.005: #0.5%
+                structures.append({
+                    'type': random.choice(['house', 'tower', 'ruin']),
+                    'x': x,
+                    'y': y,
+                    'size': 2,
+                    'color': STRUCTURE_COLORS[random.choice(['house', 'tower', 'ruin'])]
+                })
 
 '''
 ###
@@ -89,22 +120,17 @@ def generate_terrain():
             elif elevation < 0.04: #Cantidad de arena
                 # Arena/playa
                 world_map[y][x] = {'type': 'sand'}
-            elif elevation < 0.5:
+            else: #Cualquier elevacion > 0.04 se convierte en hierba
                 # Tierra/pradera
-                if moisture > 0.3:
+                if moisture > 0.1:
                     world_map[y][x] = {'type': 'grass', 'variation': 1}  # Hierba húmeda
                 else:
                     world_map[y][x] = {'type': 'grass', 'variation': 0}  # Hierba seca
-            
-            # Generar estructuras aleatorias en tierra adecuada
-            if world_map[y][x]['type'] in ['grass', 'sand'] and random.random() < 0.005:
-                structures.append({
-                    'type': random.choice(['house', 'tower', 'ruin']),
-                    'x': x,
-                    'y': y,
-                    'size': random.randint(1, 3),
-                    'color': STRUCTURE_COLORS[random.choice(['house', 'tower', 'ruin'])]
-                })
+
+            # GENERAR DENTRO DEL MAPA OBJETOS 
+            generarPersonajes()
+            generarEstructuras(x,y)
+            generarCriaturas()
 
 def draw_map():
     """Dibuja el mapa en la pantalla"""
