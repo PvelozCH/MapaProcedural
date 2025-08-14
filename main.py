@@ -36,6 +36,7 @@ OCTAVES = 12          # Número de capas de ruido para mayor detalle
 PERSISTENCE = 0.53    # Controla la influencia de cada octava
 LACUNARITY = 2.0     # Controla la frecuencia de cada octava
 SCALE = 10.0        # Escala del ruido (mayor = más suave)
+REPEAT = 1024
 
 # Matriz para almacenar el mapa
 world_map = [[None for _ in range(MAP_WIDTH)] for _ in range(MAP_HEIGHT)]
@@ -53,15 +54,15 @@ def generate_terrain():
             elevation = noise.pnoise2(nx, ny, octaves=OCTAVES, 
                                     persistence=PERSISTENCE, 
                                     lacunarity=LACUNARITY, 
-                                    repeatx=1024, 
-                                    repeaty=1024, 
+                                    repeatx=REPEAT, 
+                                    repeaty=REPEAT, 
                                     base=SEED)
             
             moisture = noise.pnoise2(nx + 1000, ny + 1000, octaves=OCTAVES,
                                    persistence=PERSISTENCE,
                                    lacunarity=LACUNARITY,
-                                   repeatx=1024,
-                                   repeaty=1024,
+                                   repeatx=REPEAT,
+                                   repeaty=REPEAT,
                                    base=SEED + 1)
             
             # Determinar el tipo de terreno basado en la elevación
